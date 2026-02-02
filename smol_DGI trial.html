@@ -75,14 +75,6 @@
 		      button_label: "Weiter"
 	        };
 
-            // Hide mouse cursor
-            var hidemouse = {
-		        type: jsPsychHtmlKeyboardResponse,
-		        stimulus: "<p style='font-size:16px;'>Für den weiteren Verlauf der Studie benötigen Sie nur noch Ihre Tastatur.</p>" +
-                "<p style='font-size:16px;'>Drücken Sie die Leertaste, um fortzufahren.</p>",
-		        choices: [' ']
-            };
-
             // Welcome message
             var welcome = {
 		        type: jsPsychHtmlButtonResponse,
@@ -245,28 +237,11 @@
                 choices: "NO_KEYS",
                 trial_duration: function(){
                     return jsPsych.randomization.sampleWithoutReplacement([1000,1100,1200,1300,1400,1500,1600], 1)[0];
+                },
+				on_start: function(){
+                    document.body.style.cursor = 'none';
                 }
             };
-
-//            // Helper function to get stimulus duration
-//            function getDurationFor(sVal) {
-//                sVal = Number(sVal);
-//                if (!isNaN(sVal)) {
-//                    if ([1,4,7,10,13,16].includes(sVal)) return 50;
-//                    if ([2,5,8,11,14].includes(sVal)) return 150;
-//                    if ([3,6,9,12,15].includes(sVal)) return 250;
-//                }
-//                return 50;
-//            }
-
-//            // Helper function to decrement s
-//            function decrementS() {
-//                if (!isNaN(s) && s >= 2 && s <= 16) {
-//                    s = s - 1;
-//                } else {
-//                    s = 16;
-//                }
-//            }
 
             // Image stimulus with variable duration
             var image = {
@@ -282,7 +257,12 @@
                 type: jsPsychImageKeyboardResponse,
                 stimulus: jsPsych.timelineVariable('mask'),
                 choices: "NO_KEYS",
-                trial_duration: 100
+                trial_duration: function() {
+                    return 2 * jsPsych.evaluateTimelineVariable('prestime');
+                },
+                on_finish: function(){
+                    document.body.style.cursor = 'auto';
+				}
             };
 
             // Scene Diagnostic
@@ -352,7 +332,6 @@
                 timeline.push(fullscreen_start);
                 timeline.push(age, gender, language, education);
                 timeline.push(resize);
-                timeline.push(hidemouse);
             }
 
 
@@ -382,5 +361,6 @@
             
         </script>
     </body>
+
 
 </html>
